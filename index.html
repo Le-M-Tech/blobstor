@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blobstor | Premium Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body onmousemove="moveBlobs(event)">
+
+<audio id="clickSound" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"></audio>
+<audio id="cartSound" src="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3"></audio>
+
+<div class="bg">
+  <div class="blob blob1" id="b1"></div>
+  <div class="blob blob2" id="b2"></div>
+  <div class="blob blob3" id="b3"></div>
+</div>
+
+<nav>
+  <div class="container nav-content">
+    <div class="nav-logo" onclick="show('home')">
+        <div class="blob-icon"></div>
+        BLOB<span>STOR</span>
+    </div>
+    
+    <div class="nav-links">
+      <div class="nav-link" onclick="show('home')" data-key="n-h">Accueil</div>
+      <div class="nav-link" onclick="show('shop')" data-key="n-s">Boutique</div>
+      <div class="nav-link" onclick="show('tv')" data-key="n-t">Lab-TV</div>
+      <div class="nav-link" onclick="show('reviews')" data-key="n-a">Avis</div>
+      <div class="nav-link" onclick="show('contact')" data-key="n-c">Contact</div>
+    </div>
+
+    <div class="nav-right">
+      <div class="lang-selector">
+          <div class="lang-current">🌐</div>
+          <div class="lang-menu">
+              <span onclick="setLang('fr')">🇫🇷 FR</span>
+              <span onclick="setLang('en')">🇺🇸 EN</span>
+              <span onclick="setLang('es')">🇪🇸 ES</span>
+              <span onclick="setLang('de')">🇩🇪 DE</span>
+              <span onclick="setLang('pt')">🇵🇹 PT</span>
+          </div>
+      </div>
+      <div class="cart-btn" id="mainCartBtn" onclick="toggleCart()">🛒 <span id="count">0</span></div>
+      <div class="theme-switch" onclick="toggleDark()">🌓</div>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <div id="home" class="section">
+    <div class="hero-card">
+      <span class="glitter-text" data-key="h-tag">✨ NOUVELLE GÉNÉRATION ✨</span>
+      <h1 class="mega-title">
+          <span data-key="h-title-1">Devenez</span> 
+          <span class="accent-text" data-key="h-title-2">Adoptant</span> 
+          <span data-key="h-title-3">du futur.</span>
+      </h1>
+      <button class="btn-glow" onclick="show('shop')" data-key="h-btn">Accéder à la boutique</button>
+    </div>
+  </div>
+
+  <div id="shop" class="section hidden">
+    <h2 class="section-title" data-key="s-title">Notre Sélection</h2>
+    <div class="shop-grid" id="shopGrid"></div>
+  </div>
+
+  <div id="tv" class="section hidden">
+    <h2 class="section-title" data-key="t-title">Lab-TV 📺</h2>
+    <div class="shop-grid" id="videoGrid"></div>
+  </div>
+
+  <div id="reviews" class="section hidden">
+    <h2 class="section-title" data-key="a-title">Avis des éleveurs</h2>
+    <div class="contact-card" style="margin-bottom:50px;">
+        <h3 data-key="a-sub">Partagez votre expérience</h3>
+        <input type="text" id="revName" placeholder="Votre nom" class="custom-input" data-p="p-name">
+        <textarea id="revText" placeholder="Votre message..." class="custom-input" rows="3" data-p="p-msg"></textarea>
+        <button class="add-btn" onclick="addReview()" data-key="a-btn">Publier mon avis</button>
+    </div>
+    <div class="power-grid" id="reviewsGrid"></div>
+  </div>
+
+  <div id="contact" class="section hidden">
+    <div class="contact-card">
+      <h2 data-key="c-title">Besoin d'aide ?</h2>
+      <button class="mail-btn" onclick="sendDirectMail()" data-key="c-btn">Envoyer un mail à Maël ✉️</button>
+      <p class="mail-text">mbouyssiere@icloud.com</p>
+    </div>
+  </div>
+</div>
+
+<div class="admin-plus" onclick="adminAddVideo()">+</div>
+
+<div class="cart-panel" id="cartPanel">
+  <div style="display:flex; justify-content:space-between; align-items:center;">
+      <h3 data-key="p-title">Votre Panier</h3>
+      <span onclick="toggleCart()" style="cursor:pointer; font-weight:800;">✕</span>
+  </div>
+  <div id="cartItems"></div>
+  <div class="total-row"><span data-key="p-total">Total</span>: <span id="total">0</span>€</div>
+  <div class="cart-actions">
+    <button class="checkout-btn pay-btn" onclick="checkout()" data-key="p-buy">COMMANDER 🚀</button>
+    <button class="checkout-btn" onclick="toggleCart()" style="background:none; color:var(--text); border:1px solid rgba(128,128,128,0.2)" data-key="p-close">Fermer</button>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
+
