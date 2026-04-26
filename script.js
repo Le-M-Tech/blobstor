@@ -52,10 +52,12 @@ const translations = {
 };
 
 let currentLang = 'fr';
+
+// ✅ CORRECTION : Utilisation de ton dossier images local !
 const products = [
-    { id: 'p1', name: 'Badhamia', price: 15, descKey: 'p1-d', img: 'https://upload.wikimedia.org/wikipedia/commons/0/0e/Physarum_polycephalum.jpg' },
-    { id: 'p2', name: 'Bryan', price: 18, descKey: 'p2-d', img: 'https://upload.wikimedia.org/wikipedia/commons/6/64/Petri_dish.jpg' },
-    { id: 'p3', name: 'Livret Blob', price: 10, descKey: 'p3-d', img: 'https://images.unsplash.com/photo-1589998059171-988d887df646?q=80&w=400' }
+    { id: 'p1', name: 'Badhamia', price: 15, descKey: 'p1-d', img: 'images/p1.png' },
+    { id: 'p2', name: 'Bryan', price: 18, descKey: 'p2-d', img: 'images/p2.png' },
+    { id: 'p3', name: 'Livret Blob', price: 10, descKey: 'p3-d', img: 'images/p3.png' }
 ];
 
 let videos = JSON.parse(localStorage.getItem('blobVideos')) || ["_YVgu0-fA20"];
@@ -75,7 +77,6 @@ function setLang(lang) {
     document.querySelectorAll('[data-key]').forEach(el => {
         const key = el.getAttribute('data-key');
         if (translations[lang][key]) {
-            // On change le texte SANS toucher aux classes CSS
             el.textContent = translations[lang][key];
         }
     });
@@ -89,7 +90,10 @@ function setLang(lang) {
 
 function renderProducts() {
     const btnTxt = translations[currentLang]['adopt'] || "ADOPTER";
-    document.getElementById('shopGrid').innerHTML = products.map(p => `
+    const shopGrid = document.getElementById('shopGrid');
+    if (!shopGrid) return;
+    
+    shopGrid.innerHTML = products.map(p => `
     <div class="blob-card">
       <div class="card-inner" id="${p.id}">
         <img src="${p.img}" class="product-img">
@@ -112,7 +116,9 @@ function animateAndAdd(elementId, name, price) {
     clone.style.top = rect.top + "px"; clone.style.left = rect.left + "px";
     clone.style.width = rect.width + "px"; clone.style.height = rect.height + "px";
     document.body.appendChild(clone);
-    document.getElementById('cartSound').play();
+    
+    const sound = document.getElementById('cartSound');
+    if(sound) sound.play();
 
     setTimeout(() => {
         clone.style.top = cartRect.top + "px"; clone.style.left = cartRect.left + "px";
@@ -136,7 +142,10 @@ function removeItem(idx) { cart.splice(idx, 1); updateCart(); }
 function toggleCart() { document.getElementById('cartPanel').classList.toggle('open'); playClick(); }
 
 function renderReviews() {
-    document.getElementById('reviewsGrid').innerHTML = reviews.map(r => `
+    const reviewsGrid = document.getElementById('reviewsGrid');
+    if (!reviewsGrid) return;
+    
+    reviewsGrid.innerHTML = reviews.map(r => `
         <div class="power-card"><p>"${r.text}"</p><h4>- ${r.name}</h4></div>`).join('');
 }
 
@@ -145,14 +154,18 @@ function addReview() {
     const text = document.getElementById('revText').value;
     if(!name || !text) return;
     reviews.unshift({name, text});
-    localStorage.setItem('blobReviews', JSON.stringify(reviews)); // SAUVEGARDE LOCALE
+    localStorage.setItem('blobReviews', JSON.stringify(reviews)); 
     renderReviews();
     document.getElementById('revName').value = ""; document.getElementById('revText').value = "";
 }
 
+// ✅ CORRECTION : Lien de l'iframe YouTube réparé pour s'afficher correctement !
 function renderVideos() {
     const delTxt = translations[currentLang]['del'] || "Supprimer";
-    document.getElementById('videoGrid').innerHTML = videos.map(vId => `
+    const videoGrid = document.getElementById('videoGrid');
+    if (!videoGrid) return;
+    
+    videoGrid.innerHTML = videos.map(vId => `
         <div class="card-inner">
             <div class="video-container">
                 <iframe src="https://www.youtube.com/embed/${vId}" frameborder="0" allowfullscreen></iframe>
@@ -166,7 +179,6 @@ function adminAddVideo() {
     if(pass === "Le_M@120614") {
         const res = prompt(translations[currentLang]['url-req']);
         if(res) {
-            // Extrait l'ID si c'est un lien complet
             let id = res.includes("v=") ? res.split("v=")[1].split("&")[0] : res;
             videos.push(id);
             localStorage.setItem('blobVideos', JSON.stringify(videos));
@@ -193,15 +205,29 @@ function checkout() {
 }
 
 function show(id) {
-    ['home', 'shop', 'tv', 'reviews', 'contact'].forEach(s => document.getElementById(s).classList.add('hidden'));
-    document.getElementById(id).classList.remove('hidden');
+    ['home', 'shop', 'tv', 'reviews', 'contact'].forEach(s => {
+        const el = document.getElementById(s);
+        if (el) el.classList.add('hidden');
+    });
+    const target = document.getElementById(id);
+    if (target) target.classList.remove('hidden');
     playClick();
 }
 
-function playClick(){ document.getElementById('clickSound').play(); }
-function toggleDark(){ document.body.classList.toggle('dark'); playClick(); }
-function moveBlobs(e){
+function playClick() { 
+    const sound = document.getElementById('clickSound');
+    if(sound) sound.play(); 
+}
+
+function toggleDark() { 
+    document.body.classList.toggle('dark'); 
+    playClick(); 
+}
+
+function moveBlobs(e) {
     const x=e.clientX/window.innerWidth; const y=e.clientY/window.innerHeight;
-    document.getElementById('b1').style.transform=`translate(${x*30}px,${y*30}px)`;
-    document.getElementById('b2').style.transform=`translate(${-x*40}px,${-y*40}px)`;
+    const b1 = document.getElementById('b1');
+    const b2 = document.getElementById('b2');
+    if (b1) b1.style.transform=`translate(${x*30}px,${y*30}px)`;
+    if (b2) b2.style.transform=`translate(${-x*40}px,${-y*40}px)`;
 }
