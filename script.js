@@ -55,9 +55,9 @@ let currentLang = 'fr';
 
 // ✅ CORRECTION : Utilisation de ton dossier images local !
 const products = [
-    { id: 'p1', name: 'Badhamia', price: 15, descKey: 'p1-d', img: 'images/p1.png' },
-    { id: 'p2', name: 'Bryan', price: 18, descKey: 'p2-d', img: 'images/p2.png' },
-    { id: 'p3', name: 'Livret Blob', price: 10, descKey: 'p3-d', img: 'images/p3.png' }
+    { id: 'p1', name: 'Badhamia', price: 7, descKey: 'p1-d', img: 'images/p1.png' },
+    { id: 'p2', name: 'Bryan', price: 7.5, descKey: 'p2-d', img: 'images/p2.png' },
+    { id: 'p3', name: 'Livret Blob', price: 5, descKey: 'p3-d', img: 'images/p3.png' }
 ];
 
 let videos = JSON.parse(localStorage.getItem('blobVideos')) || ["_YVgu0-fA20"];
