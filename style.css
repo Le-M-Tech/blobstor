@@ -4,7 +4,7 @@ body.dark{ --bg:#0a0a0a; --text:#ffffff; --accent:#00ff88; --card:rgba(30,30,30,
 body{margin:0;background:var(--bg);color:var(--text);overflow-x:hidden;transition:background 0.3s;}
 
 .nav-logo { display: flex; align-items: center; gap: 10px; font-size: 1.8rem; font-weight: 900; color: var(--accent); cursor: pointer; }
-.blob-icon { width: 30px; height: 30px; background: var(--accent); border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%; animation: blobMorph 3s linear infinite alternate; }
+.blob-icon { width: 70px; height: 70px; background: var(--accent); border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%; animation: blobMorph 3s linear infinite alternate; }
 .nav-logo span { color: var(--text); }
 
 .lang-selector { position: relative; cursor: pointer; }
