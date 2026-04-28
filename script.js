@@ -53,14 +53,18 @@ const translations = {
 
 let currentLang = 'fr';
 
-// ✅ CORRECTION : Utilisation de ton dossier images local !
 const products = [
     { id: 'p1', name: 'Badhamia', price: 7, descKey: 'p1-d', img: 'images/p1.png' },
     { id: 'p2', name: 'Bryan', price: 7.5, descKey: 'p2-d', img: 'images/p2.png' },
     { id: 'p3', name: 'Livret Blob', price: 5, descKey: 'p3-d', img: 'images/p3.png' }
 ];
 
-let videos = JSON.parse(localStorage.getItem('blobVideos')) || ["_YVgu0-fA20"];
+// ✅ Vidéos par défaut avec tes nouveaux titres
+let videos = JSON.parse(localStorage.getItem('blobVideos')) || [
+    { id: "4", title: "C’est quoi le blob ?" },
+    { id: "5", title: "Tous savoir pour élever son blob à la maison" }
+];
+
 let reviews = JSON.parse(localStorage.getItem('blobReviews')) || [
     { name: "Sophie", text: "Le Badhamia est fascinant ! ★★★★★" }
 ];
@@ -76,9 +80,7 @@ function setLang(lang) {
     currentLang = lang;
     document.querySelectorAll('[data-key]').forEach(el => {
         const key = el.getAttribute('data-key');
-        if (translations[lang][key]) {
-            el.textContent = translations[lang][key];
-        }
+        if (translations[lang][key]) el.textContent = translations[lang][key];
     });
     document.querySelectorAll('[data-p]').forEach(el => {
         const key = el.getAttribute('data-p');
@@ -92,7 +94,6 @@ function renderProducts() {
     const btnTxt = translations[currentLang]['adopt'] || "ADOPTER";
     const shopGrid = document.getElementById('shopGrid');
     if (!shopGrid) return;
-    
     shopGrid.innerHTML = products.map(p => `
     <div class="blob-card">
       <div class="card-inner" id="${p.id}">
@@ -111,20 +112,16 @@ function animateAndAdd(elementId, name, price) {
     const clone = originalImg.cloneNode(true);
     const rect = originalImg.getBoundingClientRect();
     const cartRect = cartBtn.getBoundingClientRect();
-
     clone.classList.add('flying-item');
     clone.style.top = rect.top + "px"; clone.style.left = rect.left + "px";
     clone.style.width = rect.width + "px"; clone.style.height = rect.height + "px";
     document.body.appendChild(clone);
-    
     const sound = document.getElementById('cartSound');
     if(sound) sound.play();
-
     setTimeout(() => {
         clone.style.top = cartRect.top + "px"; clone.style.left = cartRect.left + "px";
         clone.style.width = "20px"; clone.style.height = "20px"; clone.style.opacity = "0";
     }, 10);
-
     setTimeout(() => { clone.remove(); cart.push({name, price}); updateCart(); }, 1000);
 }
 
@@ -144,9 +141,7 @@ function toggleCart() { document.getElementById('cartPanel').classList.toggle('o
 function renderReviews() {
     const reviewsGrid = document.getElementById('reviewsGrid');
     if (!reviewsGrid) return;
-    
-    reviewsGrid.innerHTML = reviews.map(r => `
-        <div class="power-card"><p>"${r.text}"</p><h4>- ${r.name}</h4></div>`).join('');
+    reviewsGrid.innerHTML = reviews.map(r => `<div class="power-card"><p>"${r.text}"</p><h4>- ${r.name}</h4></div>`).join('');
 }
 
 function addReview() {
@@ -159,28 +154,28 @@ function addReview() {
     document.getElementById('revName').value = ""; document.getElementById('revText').value = "";
 }
 
-// ✅ CORRECTION : Lien de l'iframe YouTube réparé pour s'afficher correctement !
 function renderVideos() {
     const delTxt = translations[currentLang]['del'] || "Supprimer";
     const videoGrid = document.getElementById('videoGrid');
     if (!videoGrid) return;
-    
-    videoGrid.innerHTML = videos.map(vId => `
-        <div class="card-inner">
+    videoGrid.innerHTML = videos.map(v => `
+        <div class="card-inner" style="margin-bottom:20px;">
+            <h4 style="margin-bottom:10px; color:var(--accent);">${v.title || "Vidéo Lab"}</h4>
             <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/${vId}" frameborder="0" allowfullscreen></iframe>
+                <iframe src="https://www.youtube.com/embed/${v.id}" frameborder="0" allowfullscreen></iframe>
             </div>
-            <button onclick="removeVideo('${vId}')" style="margin-top:10px; background:none; border:none; color:red; cursor:pointer; font-size:12px;">${delTxt}</button>
+            <button onclick="removeVideo('${v.id}')" style="margin-top:10px; background:none; border:none; color:red; cursor:pointer; font-size:12px;">${delTxt}</button>
         </div>`).join('');
 }
 
 function adminAddVideo() {
     const pass = prompt(translations[currentLang]['code-req']);
     if(pass === "Le_M@120614") {
+        const title = prompt("Titre de la vidéo :");
         const res = prompt(translations[currentLang]['url-req']);
         if(res) {
             let id = res.includes("v=") ? res.split("v=")[1].split("&")[0] : res;
-            videos.push(id);
+            videos.push({id: id, title: title});
             localStorage.setItem('blobVideos', JSON.stringify(videos));
             renderVideos();
         }
@@ -190,7 +185,7 @@ function adminAddVideo() {
 function removeVideo(vId) {
     const pass = prompt(translations[currentLang]['code-req']);
     if(pass === "Le_M@120614") {
-        videos = videos.filter(v => v !== vId);
+        videos = videos.filter(v => v.id !== vId);
         localStorage.setItem('blobVideos', JSON.stringify(videos));
         renderVideos();
     }
