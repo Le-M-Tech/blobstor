@@ -25,7 +25,7 @@ const translations = {
         's-title': 'Nuestra Selección', 't-title': 'Lab-TV 📺', 'a-title': 'Opiniones',
         'a-sub': 'Comparte tu experiencia', 'a-btn': 'Publicar opinión', 'c-title': '¿Necesitas ayuda?',
         'c-btn': 'Enviar correo ✉️', 'p-title': 'Tu Carrito', 'p-total': 'Total', 'p-buy': 'PEDIR 🚀', 'p-close': 'Cerrar',
-        'adopt': 'ADOPTAR', 'p-name': 'Tu nombre', 'p-msg': 'Tu message...',
+        'adopt': 'ADOPTAR', 'p-name': 'Tu nombre', 'p-msg': 'Tu mensaje...',
         'p1-d': 'Artista y robusto.', 'p2-d': 'Crecimiento récord.', 'p3-d': 'Guía completa.',
         'del': 'Eliminar', 'empty': 'Carrito vacío', 'code-req': 'Código de acceso:', 'url-req': 'ID de video:', 'denied': 'Acceso denegado'
     },
@@ -151,13 +151,18 @@ function addReview() {
 
 function renderVideos() {
     const delTxt = translations[currentLang]['del'] || "Supprimer";
-    document.getElementById('videoGrid').innerHTML = videos.map(vId => `
+    const lienYoutube = "https://www.youtube" + ".com/embed/";
+    
+    document.getElementById('videoGrid').innerHTML = videos.map(vId => {
+        const urlFinale = lienYoutube + vId;
+        return `
         <div class="card-inner">
             <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/${vId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <iframe src="${urlFinale}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
             <button onclick="removeVideo('${vId}')" style="margin-top:10px; background:none; border:none; color:red; cursor:pointer; font-size:12px;">${delTxt}</button>
-        </div>`).join('');
+        </div>`;
+    }).join('');
 }
 
 function adminAddVideo() {
@@ -165,8 +170,16 @@ function adminAddVideo() {
     if(pass === "Le_M@120614") {
         const res = prompt(translations[currentLang]['url-req']);
         if(res) {
-            let id = res.includes("v=") ? res.split("v=")[1].split("&")[0] : res;
-            videos.push(id);
+            let id = res;
+            if (res.includes("v=")) {
+                id = res.split("v=")[1].split("&")[0];
+            } else if (res.includes("youtu.be/")) {
+                id = res.split("youtu.be/")[1].split("?")[0];
+            } else if (res.includes("shorts/")) {
+                id = res.split("shorts/")[1].split("?")[0];
+            }
+            
+            videos.push(id.trim());
             localStorage.setItem('blobVideos', JSON.stringify(videos));
             renderVideos();
         }
