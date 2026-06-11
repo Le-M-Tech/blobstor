@@ -25,7 +25,7 @@ const translations = {
         's-title': 'Nuestra Selección', 't-title': 'Lab-TV 📺', 'a-title': 'Opiniones',
         'a-sub': 'Comparte tu experiencia', 'a-btn': 'Publicar opinión', 'c-title': '¿Necesitas ayuda?',
         'c-btn': 'Enviar correo ✉️', 'p-title': 'Tu Carrito', 'p-total': 'Total', 'p-buy': 'PEDIR 🚀', 'p-close': 'Cerrar',
-        'adopt': 'ADOPTAR', 'p-name': 'Tu nombre', 'p-msg': 'Tu mensaje...',
+        'adopt': 'ADOPTAR', 'p-name': 'Tu nombre', 'p-msg': 'Tu message...',
         'p1-d': 'Artista y robusto.', 'p2-d': 'Crecimiento récord.', 'p3-d': 'Guía completa.',
         'del': 'Eliminar', 'empty': 'Carrito vacío', 'code-req': 'Código de acceso:', 'url-req': 'ID de video:', 'denied': 'Acceso denegado'
     },
@@ -42,8 +42,8 @@ const translations = {
     pt: {
         'n-h': 'Início', 'n-s': 'Loja', 'n-t': 'Lab-TV', 'n-a': 'Avaliações', 'n-c': 'Contato',
         'h-tag': '✨ NOVA GERAÇÃO ✨', 'h-title-1': 'Torne-se o', 'h-title-2': 'Adotante', 'h-title-3': 'do futuro.', 'h-btn': 'Ir para a Loja',
-        's-title': 'Nossa Seleção', 't-title': 'Lab-TV 📺', 'a-title': 'Avaliações',
-        'a-sub': 'Compartilhe sua experiência', 'a-btn': 'Publicar avaliação', 'c-title': 'Precisa de ajuda?',
+        's-title': 'Nuestra Selección', 't-title': 'Lab-TV 📺', 'a-title': 'Avaliações',
+        'a-sub': 'Compartilhe sua avaliação', 'a-btn': 'Publicar avaliação', 'c-title': 'Precisa de ajuda?',
         'c-btn': 'Enviar e-mail ✉️', 'p-title': 'Seu Carrinho', 'p-total': 'Total', 'p-buy': 'PEDIR 🚀', 'p-close': 'Fechar',
         'adopt': 'ADOTAR', 'p-name': 'Seu nome', 'p-msg': 'Sua mensagem...',
         'p1-d': 'Artista e robusto.', 'p2-d': 'Crecimiento recorde.', 'p3-d': 'Guia completo.',
@@ -52,19 +52,13 @@ const translations = {
 };
 
 let currentLang = 'fr';
-
 const products = [
-    { id: 'p1', name: 'Badhamia', price: 7, descKey: 'p1-d', img: 'images/p1.png' },
-    { id: 'p2', name: 'Bryan', price: 7.5, descKey: 'p2-d', img: 'images/p2.png' },
-    { id: 'p3', name: 'Livret Blob', price: 5, descKey: 'p3-d', img: 'images/p3.png' }
+    { id: 'p1', name: 'Badhamia', price: 15, descKey: 'p1-d', img: 'https://upload.wikimedia.org/wikipedia/commons/0/0e/Physarum_polycephalum.jpg' },
+    { id: 'p2', name: 'Bryan', price: 18, descKey: 'p2-d', img: 'https://upload.wikimedia.org/wikipedia/commons/6/64/Petri_dish.jpg' },
+    { id: 'p3', name: 'Livret Blob', price: 10, descKey: 'p3-d', img: 'https://images.unsplash.com/photo-1589998059171-988d887df646?q=80&w=400' }
 ];
 
-// ✅ Vidéos par défaut avec tes nouveaux titres
-let videos = JSON.parse(localStorage.getItem('blobVideos')) || [
-    { id: "4", title: "C’est quoi le blob ?" },
-    { id: "5", title: "Tous savoir pour élever son blob à la maison" }
-];
-
+let videos = JSON.parse(localStorage.getItem('blobVideos')) || ["_YVgu0-fA20"];
 let reviews = JSON.parse(localStorage.getItem('blobReviews')) || [
     { name: "Sophie", text: "Le Badhamia est fascinant ! ★★★★★" }
 ];
@@ -80,7 +74,9 @@ function setLang(lang) {
     currentLang = lang;
     document.querySelectorAll('[data-key]').forEach(el => {
         const key = el.getAttribute('data-key');
-        if (translations[lang][key]) el.textContent = translations[lang][key];
+        if (translations[lang][key]) {
+            el.textContent = translations[lang][key];
+        }
     });
     document.querySelectorAll('[data-p]').forEach(el => {
         const key = el.getAttribute('data-p');
@@ -92,9 +88,7 @@ function setLang(lang) {
 
 function renderProducts() {
     const btnTxt = translations[currentLang]['adopt'] || "ADOPTER";
-    const shopGrid = document.getElementById('shopGrid');
-    if (!shopGrid) return;
-    shopGrid.innerHTML = products.map(p => `
+    document.getElementById('shopGrid').innerHTML = products.map(p => `
     <div class="blob-card">
       <div class="card-inner" id="${p.id}">
         <img src="${p.img}" class="product-img">
@@ -112,16 +106,18 @@ function animateAndAdd(elementId, name, price) {
     const clone = originalImg.cloneNode(true);
     const rect = originalImg.getBoundingClientRect();
     const cartRect = cartBtn.getBoundingClientRect();
+
     clone.classList.add('flying-item');
     clone.style.top = rect.top + "px"; clone.style.left = rect.left + "px";
     clone.style.width = rect.width + "px"; clone.style.height = rect.height + "px";
     document.body.appendChild(clone);
-    const sound = document.getElementById('cartSound');
-    if(sound) sound.play();
+    document.getElementById('cartSound').play();
+
     setTimeout(() => {
         clone.style.top = cartRect.top + "px"; clone.style.left = cartRect.left + "px";
         clone.style.width = "20px"; clone.style.height = "20px"; clone.style.opacity = "0";
     }, 10);
+
     setTimeout(() => { clone.remove(); cart.push({name, price}); updateCart(); }, 1000);
 }
 
@@ -139,9 +135,8 @@ function removeItem(idx) { cart.splice(idx, 1); updateCart(); }
 function toggleCart() { document.getElementById('cartPanel').classList.toggle('open'); playClick(); }
 
 function renderReviews() {
-    const reviewsGrid = document.getElementById('reviewsGrid');
-    if (!reviewsGrid) return;
-    reviewsGrid.innerHTML = reviews.map(r => `<div class="power-card"><p>"${r.text}"</p><h4>- ${r.name}</h4></div>`).join('');
+    document.getElementById('reviewsGrid').innerHTML = reviews.map(r => `
+        <div class="power-card"><p>"${r.text}"</p><h4>- ${r.name}</h4></div>`).join('');
 }
 
 function addReview() {
@@ -149,33 +144,29 @@ function addReview() {
     const text = document.getElementById('revText').value;
     if(!name || !text) return;
     reviews.unshift({name, text});
-    localStorage.setItem('blobReviews', JSON.stringify(reviews)); 
+    localStorage.setItem('blobReviews', JSON.stringify(reviews));
     renderReviews();
     document.getElementById('revName').value = ""; document.getElementById('revText').value = "";
 }
 
 function renderVideos() {
     const delTxt = translations[currentLang]['del'] || "Supprimer";
-    const videoGrid = document.getElementById('videoGrid');
-    if (!videoGrid) return;
-    videoGrid.innerHTML = videos.map(v => `
-        <div class="card-inner" style="margin-bottom:20px;">
-            <h4 style="margin-bottom:10px; color:var(--accent);">${v.title || "Vidéo Lab"}</h4>
+    document.getElementById('videoGrid').innerHTML = videos.map(vId => `
+        <div class="card-inner">
             <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/${v.id}" frameborder="0" allowfullscreen></iframe>
+                <iframe src="https://www.youtube.com/embed/${vId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
-            <button onclick="removeVideo('${v.id}')" style="margin-top:10px; background:none; border:none; color:red; cursor:pointer; font-size:12px;">${delTxt}</button>
+            <button onclick="removeVideo('${vId}')" style="margin-top:10px; background:none; border:none; color:red; cursor:pointer; font-size:12px;">${delTxt}</button>
         </div>`).join('');
 }
 
 function adminAddVideo() {
     const pass = prompt(translations[currentLang]['code-req']);
     if(pass === "Le_M@120614") {
-        const title = prompt("Titre de la vidéo :");
         const res = prompt(translations[currentLang]['url-req']);
         if(res) {
             let id = res.includes("v=") ? res.split("v=")[1].split("&")[0] : res;
-            videos.push({id: id, title: title});
+            videos.push(id);
             localStorage.setItem('blobVideos', JSON.stringify(videos));
             renderVideos();
         }
@@ -185,7 +176,7 @@ function adminAddVideo() {
 function removeVideo(vId) {
     const pass = prompt(translations[currentLang]['code-req']);
     if(pass === "Le_M@120614") {
-        videos = videos.filter(v => v.id !== vId);
+        videos = videos.filter(v => v !== vId);
         localStorage.setItem('blobVideos', JSON.stringify(videos));
         renderVideos();
     }
@@ -200,29 +191,15 @@ function checkout() {
 }
 
 function show(id) {
-    ['home', 'shop', 'tv', 'reviews', 'contact'].forEach(s => {
-        const el = document.getElementById(s);
-        if (el) el.classList.add('hidden');
-    });
-    const target = document.getElementById(id);
-    if (target) target.classList.remove('hidden');
+    ['home', 'shop', 'tv', 'reviews', 'contact'].forEach(s => document.getElementById(s).classList.add('hidden'));
+    document.getElementById(id).classList.remove('hidden');
     playClick();
 }
 
-function playClick() { 
-    const sound = document.getElementById('clickSound');
-    if(sound) sound.play(); 
-}
-
-function toggleDark() { 
-    document.body.classList.toggle('dark'); 
-    playClick(); 
-}
-
-function moveBlobs(e) {
+function playClick(){ document.getElementById('clickSound').play(); }
+function toggleDark(){ document.body.classList.toggle('dark'); playClick(); }
+function moveBlobs(e){
     const x=e.clientX/window.innerWidth; const y=e.clientY/window.innerHeight;
-    const b1 = document.getElementById('b1');
-    const b2 = document.getElementById('b2');
-    if (b1) b1.style.transform=`translate(${x*30}px,${y*30}px)`;
-    if (b2) b2.style.transform=`translate(${-x*40}px,${-y*40}px)`;
+    document.getElementById('b1').style.transform=`translate(${x*30}px,${y*30}px)`;
+    document.getElementById('b2').style.transform=`translate(${-x*40}px,${-y*40}px)`;
 }
